@@ -18,8 +18,12 @@
       A typo in any of them is not a compile error anywhere: it is a command nobody acts on, or a
       leaver's erasure quietly carried out under an administrator's conditions.
 
-      What is NOT here: the envelope, the topics, the policy object, or anything about HOW a
-      message travels. Those differ per deployment (ADR: Source/Destination, not topics) and per
+      Since 2026-09-24 it also holds ClosureCommand: the parsed form of those same fields, which
+      three participants were each about to declare for themselves. That is still vocabulary —
+      the day the agreement gains a field, one of the three would have been the one that forgot.
+
+      What is NOT here: the envelope, the topics, the policy object, the route a confirmation
+      takes, or anything else about HOW a message travels. Those differ per deployment (ADR: Source/Destination, not topics) and per
       service. This library is the vocabulary and nothing else — pure Java, no dependencies, so
       Micronaut, Spring and Quarkus consumers can all hold it.
     -->
