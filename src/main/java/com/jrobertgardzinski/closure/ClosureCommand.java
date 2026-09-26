@@ -10,7 +10,7 @@ import java.util.Optional;
  *
  * <p>This is still vocabulary and not transport — nothing here says how the command arrived, and
  * that is the point. Three participants were each about to declare their own record of exactly
- * these five fields, which is the shape of drift this library exists to prevent: the day the
+ * these fields, which is the shape of drift this library exists to prevent: the day the
  * agreement gains a field, one of the three would have been the one that forgot it.
  *
  * <p>{@code rule} is the condition stated for THE READER'S OWN axis — the reader pulls it out of
@@ -21,23 +21,16 @@ import java.util.Optional;
  *
  * @param type        the command's name on the wire
  * @param sagaId      the orchestrator's handle on this closure; the only one of these safe to log
- * @param email       whose account is closing — PII, and never written to a log
- * @param userId      the same person by identity; empty on a command from before the cutover
+ * @param userId      whose account is closing, by identity; the address is not on the command
  * @param initiatedBy {@link ClosureInitiator} as a word; decides whether conditions count at all
  * @param rule        the condition stated for the reader's own axis, if the command carried one
  */
-public record ClosureCommand(String type, String sagaId, String email, Optional<UserId> userId,
-                             String initiatedBy, Optional<String> rule) {
-
-    /** A command from before the id travelled with the closure. */
-    public ClosureCommand(String type, String sagaId, String email, String initiatedBy,
-                          Optional<String> rule) {
-        this(type, sagaId, email, Optional.empty(), initiatedBy, rule);
-    }
+public record ClosureCommand(String type, String sagaId, UserId userId, String initiatedBy,
+                             Optional<String> rule) {
 
     /** Whether this command names anybody at all. A command keyed by nobody must not be acted on. */
     public boolean isAddressed() {
-        return userId.isPresent() || (email != null && !email.isBlank());
+        return userId != null;
     }
 
     /** The wire form of {@link ClosureMessages.Field#USER_ID} back into the type; blank or mangled reads as absent. */
