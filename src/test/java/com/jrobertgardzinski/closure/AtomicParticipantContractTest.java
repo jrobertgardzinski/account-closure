@@ -11,6 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /** The contract for a participant that confirms through an outbox: the confirmation must be made inside the mark's unit of work. */
 public abstract class AtomicParticipantContractTest extends ClosureParticipantContractTest {
 
+    // Single-threaded on purpose, not thread-safe by omission: this whole fixture runs on the
+    // JUnit test thread, synchronously, so `inside` only ever needs to answer "is confirm() being
+    // called FROM WITHIN atomically.run()'s step, right now, on this same call stack" — a call-
+    // ordering question, not a concurrency one. "Atomically" is the real port's word for DATABASE
+    // atomicity (the mark and the confirmation commit together or not at all); nothing here is
+    // guarding against a second thread, because nothing here has one.
     private boolean inside;
     private int confirmedCount = -1;
     private final List<String> confirmedInside = new ArrayList<>();
