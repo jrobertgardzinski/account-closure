@@ -32,6 +32,18 @@ that have pacts.
 recognises — must fall to the side that deletes. A right to erasure that a typo can suspend is not
 one.
 
+## Also here since 2026-09-26
+
+`Atomically` and `ClosureConfirmations`: the two ports a participant that confirms through an
+outbox needs — the mark and its confirmation in one unit of work. They were declared twice, once
+per such participant, word for word.
+
+And a test-jar: `ClosureParticipantContract` states what every participant owes the orchestrator
+(only the reversible step is confirmed, with the count it reserved; a command for nobody or for
+somebody else's axis is dropped without confirming). `AtomicParticipantContract` adds the
+inside-the-unit-of-work check for the outbox participants. Each participant's test extends one of
+them and keeps only what is specific to its axis.
+
 ## What is deliberately NOT here
 
 The envelope (`id`, `version`), the topics, the policy object's shape, and anything about how a

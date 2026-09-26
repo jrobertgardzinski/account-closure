@@ -15,6 +15,10 @@ package com.jrobertgardzinski.closure;
  *       {@link #RESTORE_USER_CONTENT} and says {@link #PORTAL_PURGE_FAILED} instead.</li>
  * </ol>
  *
+ * <p>Only {@link #PURGE_USER_CONTENT} is answered. {@link #ERASE_USER_CONTENT} and
+ * {@link #RESTORE_USER_CONTENT} are the orchestrator ending the case: a participant carries them
+ * out and says nothing back.
+ *
  * <p>These are constants rather than an enum on purpose: they cross five services and three
  * frameworks, they are read out of JSON, and a consumer that meets a name from a newer producer
  * must be able to ignore it rather than fail to deserialise a value object. What this type buys is
