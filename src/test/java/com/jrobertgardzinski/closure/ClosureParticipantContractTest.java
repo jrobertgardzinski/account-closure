@@ -3,6 +3,8 @@ package com.jrobertgardzinski.closure;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.jrobertgardzinski.identity.UserId;
+
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,12 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public abstract class ClosureParticipantContractTest {
 
     protected static final String LEAVER = "leaver@example.com";
+    /** The same person by identity; rows written after the cutover carry it. */
+    protected static final UserId LEAVER_ID = UserId.of("0b7c1c2e-5d3a-4f1b-9e8d-6a5b4c3d2e1f");
     protected static final String SAGA = "7d9f9e2a-1f0a-4f6e-9a1b-2c3d4e5f6a7b";
 
     protected abstract void handle(ClosureCommand command);
 
     /** Makes the mark find this many rows of the leaver. */
     protected abstract void givenLeaverHolds(int rows);
+
+    /** Rows of the leaver's that carry {@link #LEAVER_ID} — and, deliberately, another address. */
+    protected abstract void givenLeaverHoldsUnderId(int rows);
 
     /** The count last confirmed to the orchestrator, or -1 when nothing was confirmed. */
     protected abstract int confirmed();
@@ -35,6 +42,31 @@ public abstract class ClosureParticipantContractTest {
 
     protected static ClosureCommand command(String type) {
         return command(type, LEAVER, ClosureInitiator.SELF.wire(), null);
+    }
+
+    /** The post-cutover command: the id beside the address the account uses NOW. */
+    protected static ClosureCommand commandById(String type) {
+        return new ClosureCommand(type, SAGA, "renamed@example.com", Optional.of(LEAVER_ID),
+                ClosureInitiator.SELF.wire(), Optional.empty());
+    }
+
+    @Test
+    @DisplayName("a command carrying the leaver's id reserves rows by that id, whatever address they were written under")
+    void the_id_finds_rows_written_under_another_address() {
+        givenLeaverHoldsUnderId(3);
+        givenLeaverHolds(2);
+        handle(commandById(ClosureMessages.PURGE_USER_CONTENT));
+        assertEquals(3, confirmed(), "rows without an id and under another address are not this person's");
+    }
+
+    @Test
+    @DisplayName("a command carrying the id and the address reserves both kinds of row: with the id, or without one under that address")
+    void the_address_still_finds_rows_without_an_id() {
+        givenLeaverHoldsUnderId(3);
+        givenLeaverHolds(2);
+        handle(new ClosureCommand(ClosureMessages.PURGE_USER_CONTENT, SAGA, LEAVER, Optional.of(LEAVER_ID),
+                ClosureInitiator.SELF.wire(), Optional.empty()));
+        assertEquals(5, confirmed());
     }
 
     @Test

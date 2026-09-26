@@ -24,7 +24,7 @@
 
       What is NOT here: the envelope, the topics, the policy object, the route a confirmation
       takes, or anything else about HOW a message travels. Those differ per deployment (ADR: Source/Destination, not topics) and per
-      service. This library is the vocabulary and nothing else — pure Java, no dependencies, so
+      service. This library is the vocabulary and nothing else — pure Java, only user-id beside it, so
       Micronaut, Spring and Quarkus consumers can all hold it.
     -->
     <properties>
@@ -33,6 +33,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <!-- the leaver's identity: the one type this vocabulary shares with everybody -->
+            <groupId>com.jrobertgardzinski</groupId>
+            <artifactId>user-id</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

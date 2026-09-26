@@ -56,8 +56,11 @@ public final class ClosureMessages {
         /** The message's own name — the one every consumer switches on. */
         public static final String TYPE = "type";
 
-        /** Whose account is closing. */
+        /** Whose account is closing, by address. */
         public static final String EMAIL = "email";
+
+        /** Whose account is closing, by identity: security's id. Absent from facts before the cutover. */
+        public static final String USER_ID = "userId";
 
         /** Identity's handle on the closure, echoed by the verdict so a late one settles the right case. */
         public static final String SAGA_ID = "sagaId";

@@ -5,8 +5,11 @@ import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.jrobertgardzinski.identity.UserId;
+
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,6 +33,26 @@ class ClosureCommandTest {
         assertFalse(command("   ", ClosureInitiator.SELF.wire()).isAddressed());
         assertFalse(command("", ClosureInitiator.SELF.wire()).isAddressed());
         assertFalse(command(null, ClosureInitiator.SELF.wire()).isAddressed());
+    }
+
+    @Test
+    @DisplayName("a command carrying the leaver's id is addressed even without an address")
+    void an_id_addresses_the_command_on_its_own() {
+        UserId leaver = UserId.random();
+        assertTrue(new ClosureCommand(ClosureMessages.PURGE_USER_CONTENT, "saga-1", "",
+                Optional.of(leaver), ClosureInitiator.SELF.wire(), Optional.empty()).isAddressed());
+        assertEquals(Optional.empty(), command("leaver@example.com", ClosureInitiator.SELF.wire()).userId(),
+                "the old shape carries no id");
+    }
+
+    @Test
+    @DisplayName("the wire form of an id is read leniently: blank or mangled means absent")
+    void the_wire_form_is_read_leniently() {
+        UserId leaver = UserId.random();
+        assertEquals(Optional.of(leaver), ClosureCommand.userIdOf(leaver.toString()));
+        assertEquals(Optional.empty(), ClosureCommand.userIdOf(null));
+        assertEquals(Optional.empty(), ClosureCommand.userIdOf("  "));
+        assertEquals(Optional.empty(), ClosureCommand.userIdOf("not-a-uuid"));
     }
 
     @Test

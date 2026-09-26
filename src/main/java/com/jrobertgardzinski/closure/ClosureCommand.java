@@ -1,5 +1,7 @@
 package com.jrobertgardzinski.closure;
 
+import com.jrobertgardzinski.identity.UserId;
+
 import java.util.Optional;
 
 /**
@@ -20,15 +22,34 @@ import java.util.Optional;
  * @param type        the command's name on the wire
  * @param sagaId      the orchestrator's handle on this closure; the only one of these safe to log
  * @param email       whose account is closing — PII, and never written to a log
+ * @param userId      the same person by identity; empty on a command from before the cutover
  * @param initiatedBy {@link ClosureInitiator} as a word; decides whether conditions count at all
  * @param rule        the condition stated for the reader's own axis, if the command carried one
  */
-public record ClosureCommand(String type, String sagaId, String email, String initiatedBy,
-                             Optional<String> rule) {
+public record ClosureCommand(String type, String sagaId, String email, Optional<UserId> userId,
+                             String initiatedBy, Optional<String> rule) {
+
+    /** A command from before the id travelled with the closure. */
+    public ClosureCommand(String type, String sagaId, String email, String initiatedBy,
+                          Optional<String> rule) {
+        this(type, sagaId, email, Optional.empty(), initiatedBy, rule);
+    }
 
     /** Whether this command names anybody at all. A command keyed by nobody must not be acted on. */
     public boolean isAddressed() {
-        return email != null && !email.isBlank();
+        return userId.isPresent() || (email != null && !email.isBlank());
+    }
+
+    /** The wire form of {@link ClosureMessages.Field#USER_ID} back into the type; blank or mangled reads as absent. */
+    public static Optional<UserId> userIdOf(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(UserId.of(raw));
+        } catch (IllegalArgumentException notAnId) {
+            return Optional.empty();
+        }
     }
 
     /** Whether the conditions beside this closure may be honoured — the initiator decides. */
