@@ -9,7 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** The contract for a participant that confirms through an outbox: the confirmation must be made inside the mark's unit of work. */
-public abstract class AtomicParticipantContract extends ClosureParticipantContract {
+public abstract class AtomicParticipantContractTest extends ClosureParticipantContractTest {
 
     private boolean inside;
     private int confirmedCount = -1;

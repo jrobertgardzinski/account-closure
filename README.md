@@ -38,9 +38,9 @@ one.
 outbox needs — the mark and its confirmation in one unit of work. They were declared twice, once
 per such participant, word for word.
 
-And a test-jar: `ClosureParticipantContract` states what every participant owes the orchestrator
+And a test-jar: `ClosureParticipantContractTest` states what every participant owes the orchestrator
 (only the reversible step is confirmed, with the count it reserved; a command for nobody or for
-somebody else's axis is dropped without confirming). `AtomicParticipantContract` adds the
+somebody else's axis is dropped without confirming). `AtomicParticipantContractTest` adds the
 inside-the-unit-of-work check for the outbox participants. Each participant's test extends one of
 them and keeps only what is specific to its axis.
 

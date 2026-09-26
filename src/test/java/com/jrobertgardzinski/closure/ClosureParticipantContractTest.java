@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * What every participant owes the orchestrator, whatever it holds. A participant's own test
  * extends this and adds what is specific to its axis.
  */
-public abstract class ClosureParticipantContract {
+public abstract class ClosureParticipantContractTest {
 
     protected static final String LEAVER = "leaver@example.com";
     protected static final String SAGA = "7d9f9e2a-1f0a-4f6e-9a1b-2c3d4e5f6a7b";
