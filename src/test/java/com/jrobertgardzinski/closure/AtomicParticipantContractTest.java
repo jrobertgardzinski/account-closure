@@ -1,5 +1,7 @@
 package com.jrobertgardzinski.closure;
 
+import com.jrobertgardzinski.unitofwork.UnitOfWork;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +16,7 @@ public abstract class AtomicParticipantContractTest extends ClosureParticipantCo
     // Single-threaded on purpose, not thread-safe by omission: this whole fixture runs on the
     // JUnit test thread, synchronously, so `inside` only ever needs to answer "is confirm() being
     // called FROM WITHIN unitOfWork.run()'s step, right now, on this same call stack" — a call-
-    // ordering question, not a concurrency one. "UnitOfWork" is the real port's word for DATABASE
+    // ordering question, not a concurrency one. UnitOfWork is the real port's promise of DATABASE
     // atomicity (the mark and the confirmation commit together or not at all); nothing here is
     // guarding against a second thread, because nothing here has one.
     private boolean inside;
