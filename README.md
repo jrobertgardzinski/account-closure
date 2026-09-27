@@ -34,7 +34,7 @@ one.
 
 ## Also here since 2026-09-26
 
-`Atomically` and `ClosureConfirmations`: the two ports a participant that confirms through an
+`UnitOfWork` and `ClosureConfirmations`: the two ports a participant that confirms through an
 outbox needs — the mark and its confirmation in one unit of work. They were declared twice, once
 per such participant, word for word.
 
