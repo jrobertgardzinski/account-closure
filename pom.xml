@@ -22,10 +22,20 @@
       three participants were each about to declare for themselves. That is still vocabulary —
       the day the agreement gains a field, one of the three would have been the one that forgot.
 
+      Since 2026-09-28 it also holds the PROTOCOL itself, not only its words: ClosureOutcome (one
+      shape for what a participant did, where three services each had their own), and the
+      ClosureParticipant / AtomicClosureParticipant skeleton — the guard in front of the three
+      commands, the switch between them, and the mark that commits together with its confirmation.
+      Those were copied word for word into three participants and had already drifted in the one
+      way nobody sees: the wording of a log line. The contract tests below held all three to the
+      same promises; the skeleton is that agreement on the production side.
+
       What is NOT here: the envelope, the topics, the policy object, the route a confirmation
       takes, or anything else about HOW a message travels. Those differ per deployment (ADR: Source/Destination, not topics) and per
-      service. This library is the vocabulary and nothing else — pure Java, only user-id and unit-of-work beside it, so
-      Micronaut, Spring and Quarkus consumers can all hold it.
+      service. Nor the conditions a closure may carry: what those WORDS mean is the portal's
+      business and lives in portal-libs/purge-rule, which is why the skeleton hands the whole
+      command to the participant and lets it read its own axis. Pure Java, only user-id,
+      unit-of-work and slf4j beside it, so Micronaut, Spring and Quarkus consumers can all hold it.
     -->
     <properties>
         <maven.compiler.release>25</maven.compiler.release>
@@ -44,6 +54,14 @@
             <groupId>com.jrobertgardzinski</groupId>
             <artifactId>user-id</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <!-- the estate's logging front: the skeleton drops a command that names nobody, and a
+                 drop nobody can see is the failure mode. Logged under the PARTICIPANT's own name
+                 (getClass()), so the services' log tests and an operator's grep still find it. -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.16</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
